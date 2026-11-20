@@ -25,3 +25,4 @@
 
 - [How it works](how-it-works.md)
 - [Troubleshooting](troubleshooting.md)
+- [Changelog](changelog.md)

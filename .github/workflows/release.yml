@@ -1,0 +1,89 @@
+name: Release
+
+# One run makes a whole release:
+#   1. set the version and roll the changelog (scripts/release.sh), run the tests
+#   2. commit, tag v<version> and push
+#   3. point the Homebrew formula at the new tag
+#   4. create the GitHub release with the changelog section as notes
+#   5. publish the docs of that version to GitHub Pages
+#
+# Start it from the Actions tab or with: gh workflow run release.yml -f version=1.2.3
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 1.2.3 (no leading v)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # macOS: the tests cover the app bundles and the launcher window.
+    runs-on: macos-latest
+    env:
+      VERSION: ${{ inputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check preconditions
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::Releases are made from main, not from $GITHUB_REF"
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "::error::Tag v$VERSION already exists"
+            exit 1
+          fi
+
+      - name: Set version and roll the changelog
+        run: scripts/release.sh "$VERSION" --notes "$RUNNER_TEMP/notes.md"
+
+      - name: Test
+        run: cargo test --locked
+
+      - name: Commit, tag and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Cargo.toml Cargo.lock CHANGELOG.md docs/theme/version.js
+          # Nothing to commit when the files already carry this version and date.
+          git diff --cached --quiet || git commit -m "Release v$VERSION"
+          git tag -a "v$VERSION" -m "v$VERSION"
+          git push --atomic origin main "v$VERSION"
+
+      - name: Update the Homebrew formula
+        run: |
+          url="https://github.com/$GITHUB_REPOSITORY/archive/refs/tags/v$VERSION.tar.gz"
+          curl -sSfL --retry 5 --retry-delay 5 --retry-all-errors -o "$RUNNER_TEMP/source.tar.gz" "$url"
+          sha="$(shasum -a 256 "$RUNNER_TEMP/source.tar.gz" | cut -d' ' -f1)"
+          URL="$url" SHA="$sha" perl -pi -e '
+            s{^  url ".*"$}{  url "$ENV{URL}"};
+            s{^  sha256 ".*"$}{  sha256 "$ENV{SHA}"};
+          ' Formula/claude-profile.rb
+          git add Formula/claude-profile.rb
+          git commit -m "Formula: claude-profile $VERSION"
+          git push origin main
+
+      - name: Create the GitHub release
+        run: gh release create "v$VERSION" --verify-tag --title "v$VERSION" --notes-file "$RUNNER_TEMP/notes.md"
+
+  docs:
+    needs: release
+    uses: ./.github/workflows/docs.yml
+    with:
+      ref: v${{ inputs.version }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

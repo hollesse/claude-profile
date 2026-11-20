@@ -24,6 +24,10 @@ fn main() {
         && Command::new("swiftc")
             .args(["-O", "-swift-version", "5", "-parse-as-library"])
             .args(["-target", &format!("{arch}-apple-macos13.0")])
+            // Inside OUT_DIR, so the build also works where the home directory is not
+            // writable (Homebrew's build sandbox).
+            .arg("-module-cache-path")
+            .arg(out.with_file_name("swift-module-cache"))
             .arg(SOURCE)
             .arg("-o")
             .arg(&out)

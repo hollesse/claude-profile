@@ -57,8 +57,11 @@ Other profile directories (`~/.claude-<name>`) stay where they are. Delete them 
 
 ```sh
 rm -r ~/.config/claude-profiles
-cargo uninstall claude-profile
+brew uninstall claude-profile    # installed with Homebrew
+cargo uninstall claude-profile   # installed from source
 ```
+
+Run the line that matches how you installed it. With Homebrew, `brew untap hollesse/claude-profile` also removes the tap.
 
 ## 6. Leftovers
 

@@ -1,13 +1,23 @@
 name: Docs
 
 # Builds the mdBook in docs/ and publishes it to GitHub Pages.
+#
+# The published docs always describe a release: the release workflow calls this one with the
+# new tag. A manual run republishes the docs of a tag you name (or of main, for a fix that
+# should not wait for the next release).
 on:
-  push:
-    branches: [main]
-    paths:
-      - "docs/**"
-      - ".github/workflows/docs.yml"
+  workflow_call:
+    inputs:
+      ref:
+        description: "Tag or branch to build the docs from"
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      ref:
+        description: "Tag or branch to build the docs from, e.g. v1.2.3"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -25,6 +35,8 @@ jobs:
       MDBOOK_VERSION: "0.5.4"
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - name: Install mdBook
         run: |
           mkdir -p "$HOME/bin"

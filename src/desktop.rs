@@ -236,9 +236,12 @@ fn xml_escape(s: &str) -> String {
     s.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;")
 }
 
+/// The path of this binary as it was started, made absolute but with symlinks kept: the
+/// apps store it, and a package manager's stable link (Homebrew: `…/bin/claude-profile`)
+/// survives an upgrade, while the versioned path behind it does not.
 fn self_path() -> Result<PathBuf> {
     std::env::current_exe()
-        .and_then(|p| p.canonicalize())
+        .and_then(std::path::absolute)
         .context("cannot determine the path of the own binary")
 }
 
