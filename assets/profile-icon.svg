@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Template for the icons of the profile apps (“Claude (Name).app”). src/icon.rs replaces the
+       placeholders in double curly braces with the profile's colors and name. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="{{BG_TOP}}"/>
+      <stop offset="1" stop-color="{{BG_BOTTOM}}"/>
+    </linearGradient>
+    <filter id="tile" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)" filter="url(#tile)"/>
+  <rect x="101.500" y="101.500" width="821" height="821" rx="184.500" fill="none" stroke="{{FG}}" stroke-opacity="0.14" stroke-width="3"/>
+  <g transform="translate(512 432) scale(1.42)">
+    <g fill="{{FG}}" stroke="{{FG}}" stroke-width="10" stroke-linejoin="round">
+      <polygon points="5.0,-20.0 15.0,-150.0 -15.0,-150.0 -5.0,-20.0"/>
+      <polygon points="14.6,-14.6 78.8,-102.0 53.1,-117.4 6.0,-19.7"/>
+      <polygon points="19.6,-6.4 131.8,-64.6 115.9,-90.1 14.3,-14.8"/>
+      <polygon points="20.0,5.0 134.0,15.0 134.0,-15.0 20.0,-5.0"/>
+      <polygon points="14.3,14.8 119.3,92.2 135.2,66.8 19.6,6.4"/>
+      <polygon points="6.0,19.7 51.0,114.0 76.7,98.6 14.6,14.6"/>
+      <polygon points="-5.0,20.0 -15.0,148.0 15.0,148.0 5.0,20.0"/>
+      <polygon points="-14.6,14.6 -80.8,105.4 -55.1,120.9 -6.0,19.7"/>
+      <polygon points="-19.6,6.4 -135.2,66.8 -119.3,92.2 -14.3,14.8"/>
+      <polygon points="-20.0,-5.0 -138.0,-15.0 -138.0,15.0 -20.0,5.0"/>
+      <polygon points="-14.3,-14.8 -115.9,-90.1 -131.8,-64.6 -19.6,-6.4"/>
+      <polygon points="-6.0,-19.7 -52.0,-115.7 -77.8,-100.3 -14.6,-14.6"/>
+    </g>
+    <circle r="27" fill="{{FG}}"/>
+  </g>
+  <text x="512" y="{{TEXT_Y}}" text-anchor="middle" font-family="{{FONT}}"
+        font-weight="bold" font-size="{{FONT_SIZE}}" fill="{{FG}}">{{NAME}}</text>
+</svg>

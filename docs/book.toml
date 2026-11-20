@@ -1,0 +1,15 @@
+[book]
+title = "claude-profile"
+description = "Separate Claude Code profiles on one machine"
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+additional-css = ["theme/version.css"]
+additional-js = ["theme/version.js"]
+git-repository-url = "https://github.com/hollesse/claude-profile"

@@ -1,0 +1,16 @@
+.menu-bar .right-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.version-tag {
+    margin: 0 8px;
+    padding: 2px 8px;
+    border: 1px solid var(--icons);
+    border-radius: 999px;
+    color: var(--icons);
+    font-size: 1.3rem;
+    line-height: 1.5;
+    white-space: nowrap;
+    user-select: none;
+}
