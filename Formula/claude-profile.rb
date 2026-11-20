@@ -7,7 +7,7 @@ class ClaudeProfile < Formula
   desc "Separate Claude Code profiles on one machine"
   homepage "https://hollesse.github.io/claude-profile/"
   url "https://github.com/hollesse/claude-profile/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "559b8c130c0209c3b9f2bfd5cb03ea8a7d1b3d043eebccd7bba5b957a700816e"
   license "MIT"
   head "https://github.com/hollesse/claude-profile.git", branch: "main"
 
