@@ -36,7 +36,7 @@ brew trust hollesse/claude-profile   # recent Homebrew versions ask for this onc
 brew install claude-profile
 ```
 
-Or build it from source with `cargo install --path . --locked` – see [Installation](https://hollesse.github.io/claude-profile/installation.html).
+Homebrew installs a prebuilt binary for macOS and Linux. You can also download one from the [releases](https://github.com/hollesse/claude-profile/releases) or build from source with `cargo install --path . --locked` – see [Installation](https://hollesse.github.io/claude-profile/installation.html).
 
 ## Quick start
 
@@ -100,15 +100,17 @@ mdbook serve docs --open
    ```
 
    The same button is in the Actions tab under “Release” → “Run workflow”.
-3. Run `git pull` afterwards – the workflow adds two commits to `main`.
+3. Run `git pull` afterwards – the workflow adds the release commit to `main`.
 
 The [release workflow](.github/workflows/release.yml) then does the rest:
 
-- sets the version in `Cargo.toml`, `Cargo.lock` and the docs, and turns the Unreleased section into the section of the new version ([`scripts/release.sh`](scripts/release.sh)),
-- runs the tests, commits, tags `v1.2.3` and pushes,
-- points the [Homebrew formula](Formula/claude-profile.rb) at the new tag,
-- creates the GitHub release with the changelog section as notes,
+- sets the version in `Cargo.toml`, `Cargo.lock` and the docs, and turns the Unreleased section into the section of the new version ([`scripts/release.sh`](scripts/release.sh)), then runs the tests,
+- builds the binary for macOS (Apple Silicon, Intel) and Linux (x86_64, ARM),
+- writes the [Homebrew formula](Formula/claude-profile.rb) for those binaries ([`scripts/formula.sh`](scripts/formula.sh)),
+- commits, tags `v1.2.3` and pushes, and creates the GitHub release with the binaries and the changelog section as notes,
 - publishes the docs of that version to GitHub Pages.
+
+Nothing is pushed or published before all binaries are built, so a failed run leaves no trace and can simply be started again. To rehearse a release without publishing anything, add `-f dry_run=true`: the run prepares and builds everything and prints the formula in its log.
 
 The published docs change only with a release. To republish them without one – for a typo fix, say – run `gh workflow run docs.yml -f ref=main`.
 

@@ -71,4 +71,4 @@ The tests use a temporary `HOME`. Never run commands that write to the real `~/.
 
 ## Releasing
 
-Releases are made only by the release workflow (`gh workflow run release.yml -f version=1.2.3`), described in the README. It sets the version in `Cargo.toml`, `Cargo.lock` and `docs/theme/version.js`, rolls the changelog, tags, updates `Formula/claude-profile.rb` and publishes the docs. Do not change those version numbers, the formula's `url`/`sha256`, or tags by hand, and do not start a release unless asked to.
+Releases are made only by the release workflow (`gh workflow run release.yml -f version=1.2.3`), described in the README. It sets the version in `Cargo.toml`, `Cargo.lock` and `docs/theme/version.js`, rolls the changelog, builds the binaries for all platforms, generates `Formula/claude-profile.rb` (`scripts/formula.sh`), tags and publishes the docs. Do not change those version numbers, the formula, or tags by hand, and do not start a release unless asked to.

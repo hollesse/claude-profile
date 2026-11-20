@@ -14,7 +14,7 @@ brew trust hollesse/claude-profile
 brew install claude-profile
 ```
 
-Homebrew builds `claude-profile` from the source of the latest release; the Rust toolchain it needs for that is installed or updated along the way. The first two lines are only needed once:
+Homebrew downloads the prebuilt binary of the latest release for your platform – macOS on Apple Silicon or Intel, Linux on x86_64 or ARM. Nothing is compiled, and no Rust toolchain is needed. The first two lines are only needed once:
 
 - `brew tap` tells Homebrew where the formula lives.
 - `brew trust` allows Homebrew to load formulae from this tap. Recent Homebrew versions refuse a tap that is not part of Homebrew itself until you trust it (“Refusing to load formula … from untrusted tap”). If your Homebrew does not know the `trust` command, skip the line.
@@ -27,6 +27,12 @@ brew upgrade claude-profile
 ```
 
 Profiles and settings stay unchanged. What changed between versions is in the [changelog](changelog.md).
+
+## Download a binary
+
+The same binaries are attached to every [release on GitHub](https://github.com/hollesse/claude-profile/releases) as `claude-profile-<version>-<target>.tar.gz`. Unpack the archive and put `claude-profile` into a directory on your `PATH`.
+
+On macOS, prefer Homebrew: a binary downloaded with the browser is marked as coming from the internet, and because it is not notarized by Apple, macOS refuses to start it until you remove that mark (`xattr -d com.apple.quarantine claude-profile`).
 
 ## From source
 

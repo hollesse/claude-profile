@@ -83,7 +83,7 @@ An app created earlier in another place stays there – delete it by hand, other
 ## Notes
 
 - The starter apps and the launcher contain the absolute path to the `claude-profile` binary. If it moves later – for example when you switch from a source build to Homebrew – create the apps again. Updates through Homebrew keep the path.
-- The launcher's window is compiled with `swiftc` when `claude-profile` is built and needs macOS 13 or later. If `swiftc` is missing at build time, the launcher gets a simple selection dialog without icons instead.
+- The launcher's window is compiled with `swiftc` when `claude-profile` is built and needs macOS 13 or later. If `swiftc` is missing at build time, the launcher gets a simple selection dialog without icons instead. The released binaries – Homebrew and the downloads – always include the window.
 - If Finder still shows an old icon after re-creating an app, `killall Finder Dock` helps.
 - Existing apps of the same name are only overwritten if they were created by `claude-profile`.
 - Don't start Claude Desktop directly from the Applications folder anymore if the separation matters: that instance uses the default config, that is, the profile `~/.claude` points to.

@@ -9,8 +9,12 @@ use std::process::Command;
 
 fn main() {
     const SOURCE: &str = "launcher/Launcher.swift";
+    // Set for release builds: a macOS build without the launcher window fails instead of
+    // falling back to the simple dialog.
+    const REQUIRE: &str = "CLAUDE_PROFILE_REQUIRE_LAUNCHER_UI";
     println!("cargo:rerun-if-changed={SOURCE}");
     println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-env-changed={REQUIRE}");
 
     let out = PathBuf::from(std::env::var("OUT_DIR").unwrap()).join("launcher-ui");
     let os = std::env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
@@ -35,6 +39,9 @@ fn main() {
             .map(|s| s.success())
             .unwrap_or(false);
     if !built {
+        if os == "macos" && std::env::var_os(REQUIRE).is_some() {
+            panic!("swiftc is missing or failed, and {REQUIRE} is set");
+        }
         if os == "macos" {
             println!(
                 "cargo:warning=swiftc is missing or failed – “Claude Profiles.app” only gets the simple picker dialog"

@@ -1,13 +1,15 @@
 name: Release
 
-# One run makes a whole release:
-#   1. set the version and roll the changelog (scripts/release.sh), run the tests
-#   2. commit, tag v<version> and push
-#   3. point the Homebrew formula at the new tag
-#   4. create the GitHub release with the changelog section as notes
-#   5. publish the docs of that version to GitHub Pages
+# One run makes a whole release. Nothing is pushed or published before everything is built:
+#
+#   prepare  set the version and roll the changelog (scripts/release.sh), run the tests
+#   build    build the binary for every platform from exactly that state
+#   publish  write the Homebrew formula for those binaries, commit, tag v<version>, push,
+#            create the GitHub release with the binaries and the changelog section as notes
+#   docs     publish the docs of that version to GitHub Pages
 #
 # Start it from the Actions tab or with: gh workflow run release.yml -f version=1.2.3
+# With -f dry_run=true it prepares and builds everything, shows the formula, and stops.
 on:
   workflow_dispatch:
     inputs:
@@ -15,25 +17,27 @@ on:
         description: "Version to release, e.g. 1.2.3 (no leading v)"
         required: true
         type: string
+      dry_run:
+        description: "Build everything, publish nothing"
+        type: boolean
+        default: false
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: release
   cancel-in-progress: false
 
+env:
+  VERSION: ${{ inputs.version }}
+
 jobs:
-  release:
+  prepare:
     # macOS: the tests cover the app bundles and the launcher window.
     runs-on: macos-latest
-    env:
-      VERSION: ${{ inputs.version }}
-      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Check preconditions
         run: |
@@ -41,45 +45,146 @@ jobs:
             echo "::error::Releases are made from main, not from $GITHUB_REF"
             exit 1
           fi
-          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null; then
             echo "::error::Tag v$VERSION already exists"
             exit 1
           fi
 
       - name: Set version and roll the changelog
-        run: scripts/release.sh "$VERSION" --notes "$RUNNER_TEMP/notes.md"
+        run: |
+          mkdir -p "$RUNNER_TEMP/prepared"
+          scripts/release.sh "$VERSION" --notes "$RUNNER_TEMP/prepared/notes.md"
+          git diff --binary > "$RUNNER_TEMP/prepared/release.patch"
 
       - name: Test
         run: cargo test --locked
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prepared
+          path: ${{ runner.temp }}/prepared
+          if-no-files-found: error
+
+  build:
+    needs: prepare
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - target: aarch64-apple-darwin
+            os: macos-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          # musl: statically linked, runs on any Linux distribution.
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-24.04-arm
+    runs-on: ${{ matrix.os }}
+    env:
+      TARGET: ${{ matrix.target }}
+      MACOSX_DEPLOYMENT_TARGET: "11.0"
+      # A release without the launcher window is a broken release: fail instead of falling
+      # back to the simple dialog (see build.rs).
+      CLAUDE_PROFILE_REQUIRE_LAUNCHER_UI: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: prepared
+          path: ${{ runner.temp }}/prepared
+
+      - name: Apply the release changes
+        run: git apply "$RUNNER_TEMP/prepared/release.patch"
+
+      - name: Install the target
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y musl-tools
+          fi
+          rustup target add "$TARGET"
+
+      - name: Build
+        run: cargo build --release --locked --target "$TARGET"
+
+      - name: Check the binary
+        # The Intel build cannot run on the Apple Silicon runner.
+        if: matrix.target != 'x86_64-apple-darwin'
+        run: |
+          bin="target/$TARGET/release/claude-profile"
+          test "$("$bin" --version)" = "claude-profile $VERSION"
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            HOME="$RUNNER_TEMP/home" "$bin" launcher --dir "$RUNNER_TEMP/apps"
+            file "$RUNNER_TEMP/apps/Claude Profiles.app/Contents/MacOS/launcher" | grep -q "Mach-O"
+          fi
+
+      - name: Package
+        run: |
+          mkdir -p staging dist
+          cp "target/$TARGET/release/claude-profile" LICENSE README.md staging/
+          tar -czf "dist/claude-profile-$VERSION-$TARGET.tar.gz" -C staging claude-profile LICENSE README.md
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.target }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: prepared
+          path: ${{ runner.temp }}/prepared
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/dist
+
+      - name: Apply the release changes and write the formula
+        run: |
+          git apply "$RUNNER_TEMP/prepared/release.patch"
+          scripts/formula.sh "$VERSION" "$RUNNER_TEMP/dist" > "$RUNNER_TEMP/formula.rb"
+          mv "$RUNNER_TEMP/formula.rb" Formula/claude-profile.rb
+          ls -l "$RUNNER_TEMP/dist"
+          cat Formula/claude-profile.rb
+          ruby -c Formula/claude-profile.rb
+
       - name: Commit, tag and push
+        if: ${{ !inputs.dry_run }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Cargo.toml Cargo.lock CHANGELOG.md docs/theme/version.js
-          # Nothing to commit when the files already carry this version and date.
-          git diff --cached --quiet || git commit -m "Release v$VERSION"
+          git add Cargo.toml Cargo.lock CHANGELOG.md docs/theme/version.js Formula/claude-profile.rb
+          git commit -m "Release v$VERSION"
           git tag -a "v$VERSION" -m "v$VERSION"
-          git push --atomic origin main "v$VERSION"
-
-      - name: Update the Homebrew formula
-        run: |
-          url="https://github.com/$GITHUB_REPOSITORY/archive/refs/tags/v$VERSION.tar.gz"
-          curl -sSfL --retry 5 --retry-delay 5 --retry-all-errors -o "$RUNNER_TEMP/source.tar.gz" "$url"
-          sha="$(shasum -a 256 "$RUNNER_TEMP/source.tar.gz" | cut -d' ' -f1)"
-          URL="$url" SHA="$sha" perl -pi -e '
-            s{^  url ".*"$}{  url "$ENV{URL}"};
-            s{^  sha256 ".*"$}{  sha256 "$ENV{SHA}"};
-          ' Formula/claude-profile.rb
-          git add Formula/claude-profile.rb
-          git commit -m "Formula: claude-profile $VERSION"
-          git push origin main
+          # Fails when main moved since the run started – then nothing is published.
+          git push --atomic origin "HEAD:refs/heads/main" "refs/tags/v$VERSION"
 
       - name: Create the GitHub release
-        run: gh release create "v$VERSION" --verify-tag --title "v$VERSION" --notes-file "$RUNNER_TEMP/notes.md"
+        if: ${{ !inputs.dry_run }}
+        run: |
+          gh release create "v$VERSION" --verify-tag --title "v$VERSION" \
+            --notes-file "$RUNNER_TEMP/prepared/notes.md" "$RUNNER_TEMP"/dist/*.tar.gz
 
   docs:
-    needs: release
+    needs: publish
+    if: ${{ !inputs.dry_run }}
     uses: ./.github/workflows/docs.yml
     with:
       ref: v${{ inputs.version }}
