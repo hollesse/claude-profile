@@ -4,6 +4,8 @@ All notable changes to `claude-profile` are listed here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-20
+
 ### Changed
 
 - Homebrew installs a prebuilt binary instead of building from source: the installation takes seconds and no longer pulls in the Rust toolchain. Run `brew upgrade claude-profile` to switch; `brew autoremove` afterwards removes Rust if nothing else needs it.
