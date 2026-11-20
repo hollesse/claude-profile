@@ -17,6 +17,16 @@ pub const VAR: &str = "CLAUDE_PROFILE_COMPLETE";
 /// Looked up in `PATH` on every completion, so the registration survives an upgrade.
 pub const BIN: &str = "claude-profile";
 
+/// Appended to the zsh script. Sourced from `.zshrc`, the script only registers its function.
+/// Installed as the file `_claude-profile` in `fpath` (Homebrew does that), zsh runs the
+/// script itself as the completion function – on every Tab, and registering alone completes
+/// nothing. So when it runs as that function, it answers the request as well.
+const ZSH_AUTOLOADED: &str = r#"
+if [[ "${funcstack[1]}" == "_claude-profile" ]]; then
+    _clap_dynamic_completer_claude_profile "$@"
+fi
+"#;
+
 #[derive(Clone, Copy, Debug, PartialEq, clap::ValueEnum)]
 pub enum Shell {
     Bash,
@@ -53,6 +63,9 @@ pub fn print(shell: Shell) -> Result<()> {
     };
     let mut script = Vec::new();
     completer.write_registration(VAR, BIN, BIN, BIN, &mut script)?;
+    if shell == Shell::Zsh {
+        script.extend_from_slice(ZSH_AUTOLOADED.as_bytes());
+    }
     match std::io::stdout().write_all(&script) {
         // The reader closed early (`… | head`): nothing to report.
         Err(e) if e.kind() == std::io::ErrorKind::BrokenPipe => Ok(()),

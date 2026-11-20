@@ -4,6 +4,10 @@ All notable changes to `claude-profile` are listed here. The format follows [Kee
 
 ## [Unreleased]
 
+### Fixed
+
+- zsh completion installed by Homebrew did nothing on Tab. It now works without any line in `~/.zshrc`.
+
 ## [0.3.0] - 2026-11-20
 
 ### Added

@@ -642,6 +642,9 @@ fn completions_cover_commands_options_and_profiles() {
     // What the shell loads: a function that calls `claude-profile` from PATH.
     let zsh = e.ok(&["completions", "zsh"]);
     assert!(zsh.starts_with("#compdef claude-profile"), "{zsh}");
+    // Installed as a file in fpath, the script must also answer: it calls the function it defines.
+    assert!(zsh.contains("function _clap_dynamic_completer_claude_profile()"), "{zsh}");
+    assert!(zsh.trim_end().ends_with("_clap_dynamic_completer_claude_profile \"$@\"\nfi"), "{zsh}");
     assert!(zsh.contains("CLAUDE_PROFILE_COMPLETE=\"zsh\""), "{zsh}");
     assert!(e.ok(&["completions", "bash"]).contains("complete "));
     assert!(e.ok(&["completions", "fish"]).contains("complete "));
