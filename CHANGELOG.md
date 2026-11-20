@@ -4,6 +4,8 @@ All notable changes to `claude-profile` are listed here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-20
+
 First release.
 
 ### Added
