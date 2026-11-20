@@ -25,6 +25,7 @@ Claude Code has no notion of profiles. `claude-profile` adds them – for exampl
 - **A symlink for everything else.** `~/.claude` points to a profile of your choice, so tools with the default path hard-wired land in exactly that profile.
 - **No leaking environment.** Each profile lists variables that are removed on start, such as `OTEL_*` or `ANTHROPIC_VERTEX_*`.
 - **You see where you are.** A colored badge above the prompt names the profile of every session.
+- **Claude knows where it is.** A note at the start of every session and a bundled skill tell Claude which config directory belongs to the session, so it does not edit `~/.claude` by habit.
 - **Claude Desktop too (macOS).** One instance per profile, each with its own Dock icon, plus a launcher app to pick one.
 
 ## Install

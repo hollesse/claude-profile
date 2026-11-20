@@ -206,6 +206,23 @@ fn badge_mod_is_installed_and_passed_to_claude() {
     assert!(stdout(&out).contains(&format!("PLUGINS={}:/some/other/mod", mod_dir.display())));
     assert!(read(&mod_dir.join("hooks/register.tsx")).contains("CLAUDE_PROFILE"));
     assert!(mod_dir.join("hooks/hooks.json").is_file());
+    assert!(read(&mod_dir.join("skills/claude-profile/SKILL.md")).contains("name: claude-profile"));
+    assert!(read(&mod_dir.join("hooks/hooks.json")).contains("hooks/hint.sh"));
+
+    // The note for the model names the profile and its directory; without a profile it is empty.
+    let hint = |envs: &[(&str, &str)]| {
+        let mut c = Command::new("/bin/sh");
+        c.env_clear().env("HOME", &e.home).env("PATH", "/usr/bin:/bin");
+        c.envs(envs.iter().copied()).arg(mod_dir.join("hooks/hint.sh"));
+        stdout(&c.output().unwrap())
+    };
+    let vertex_dir = e.home.join(".claude-vertex");
+    let note = hint(&[("CLAUDE_PROFILE", "Vertex"), ("CLAUDE_CONFIG_DIR", vertex_dir.to_str().unwrap())]);
+    assert!(note.contains("runs with the profile `vertex`"), "{note}");
+    assert!(note.contains(&format!("use `{}/...`", vertex_dir.display())), "{note}");
+    // Started past claude-profile: the profile the symlink ~/.claude points to.
+    assert!(hint(&[]).contains("uses the default config `~/.claude`"));
+    assert_eq!(hint(&[("CLAUDE_CONFIG_DIR", "/somewhere/else")]), "");
     assert!(mod_dir.join(".claude-plugin/plugin.json").is_file());
 
     // Outdated files are replaced on the next start.

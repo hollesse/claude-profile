@@ -1,5 +1,5 @@
 {
   "name": "profile-badge",
   "version": "0.1.0",
-  "description": "Shows which claude-profile profile this session runs with: as a badge above the prompt, in the desktop app as the window color"
+  "description": "Shows which claude-profile profile this session runs with – as a badge above the prompt, in the desktop app as the window color – and tells Claude where the profile's configuration lives"
 }

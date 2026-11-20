@@ -47,9 +47,24 @@ In Claude Desktop the mod colors the session's window instead: the surfaces are 
 - The color only appears with the first message, because no Claude Code session is running before that.
 - In Vertex mode, Claude Desktop starts Claude Code with its own environment and its own config directory. The mod is not loaded there, and the window stays uncolored.
 
-The mod lives in `~/.config/claude-profiles/mods/profile-badge` and is passed via `CLAUDE_CODE_PLUGIN_DIRS`, to Claude Desktop as well. It reads `CLAUDE_PROFILE`, `CLAUDE_CONFIG_DIR` and the colors and display name from `profiles.json`, and changes nothing. If both variables are missing, it follows the `~/.claude` symlink and shows the profile with the suffix "via ~/.claude" – that is how you recognize a session that was started past `claude-profile` and for which `forbid_env` therefore does not apply. Set `CLAUDE_PROFILE_NO_BADGE=1` to turn it off.
+The mod lives in `~/.config/claude-profiles/mods/profile-badge` and is passed via `CLAUDE_CODE_PLUGIN_DIRS`, to Claude Desktop as well. It reads `CLAUDE_PROFILE`, `CLAUDE_CONFIG_DIR` and the colors and display name from `profiles.json`, and changes nothing. If both variables are missing, it follows the `~/.claude` symlink and shows the profile with the suffix "via ~/.claude" – that is how you recognize a session that was started past `claude-profile` and for which `forbid_env` therefore does not apply. Set `CLAUDE_PROFILE_NO_BADGE=1` to turn the mod off – the badge and [what it tells Claude](#what-claude-knows-about-its-profile).
 
 The mod's source is in the repository under `mod/profile-badge`.
+
+## What Claude knows about its profile
+
+Left alone, Claude assumes its configuration is in `~/.claude`. In a session of the profile `vertex` that is wrong whenever the symlink points to another profile: asked to "add a hook to my settings", Claude would change the other profile. The same mod therefore tells Claude where it is, in two ways:
+
+- **A note at the start of every session**, added to what Claude reads before your first message: which profile the session runs with, that its config directory is `$CLAUDE_CONFIG_DIR`, and that `~/.claude` and `~/.claude.json` are symlinks to the default profile and must not be used in their place. In a session started past `claude-profile`, the note says instead which profile `~/.claude` points to.
+- **A skill named `claude-profile`**, which Claude loads when it is about to read or change Claude Code's configuration or when you ask about profiles. It explains how to find the directory of any profile with `claude-profile list`, which files belong where, which commands only show something and which ones change something, and what to leave alone – the symlinks, `profiles.json`, copying settings between profiles.
+
+Project-level configuration inside a repository (`.claude/`, `CLAUDE.md`, `.mcp.json`) is the same for every profile, and both the note and the skill say so.
+
+Limits:
+
+- Both come with the mod. A session that does not load it – started past `claude-profile` without the mod folder in `CLAUDE_CODE_PLUGIN_DIRS`, or with `CLAUDE_PROFILE_NO_BADGE` set – gets neither.
+- The note is printed by a small shell script of the mod that Claude Code runs as a `SessionStart` hook. It only reads `CLAUDE_PROFILE`, `CLAUDE_CONFIG_DIR` and the `~/.claude` symlink.
+- They are instructions, not a lock. Nothing stops a session from writing to `~/.claude` if it is told to.
 
 ## What is separated
 

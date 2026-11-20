@@ -153,7 +153,7 @@ At start (applies to `run` and `start`):
 - `CLAUDE_CONFIG_DIR` is set to the profile directory, `CLAUDE_PROFILE` to the profile ID.
 - Variables that match the profile's `forbid_env` are removed and named in a warning (names only).
 - A status line `claude-profile: <name> (<directory>)` appears on stderr.
-- The [profile badge](../how-it-works.md#profile-badge) is loaded via `CLAUDE_CODE_PLUGIN_DIRS`.
+- The mod with the [profile badge](../how-it-works.md#profile-badge) and the [note and skill for Claude](../how-it-works.md#what-claude-knows-about-its-profile) is loaded via `CLAUDE_CODE_PLUGIN_DIRS`.
 - The process is replaced by the real `claude`.
 
 ## default

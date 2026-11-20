@@ -15,6 +15,16 @@ pub const DISABLE_ENV: &str = "CLAUDE_PROFILE_NO_BADGE";
 pub const PLUGIN_DIRS_ENV: &str = "CLAUDE_CODE_PLUGIN_DIRS";
 
 const FILES: &[(&str, &str)] = &[
+    // Run at session start: tells the model which profile it runs with.
+    (
+        "hooks/hint.sh",
+        include_str!("../mod/profile-badge/hooks/hint.sh"),
+    ),
+    // Tells the model how to find the configuration of a profile.
+    (
+        "skills/claude-profile/SKILL.md",
+        include_str!("../mod/profile-badge/skills/claude-profile/SKILL.md"),
+    ),
     (
         ".claude-plugin/plugin.json",
         include_str!("../mod/profile-badge/.claude-plugin/plugin.json"),

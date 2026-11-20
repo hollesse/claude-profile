@@ -35,7 +35,7 @@ claude-profile desktop subscription --no-app --dry-run
 - `-n` forces a new instance, so several profiles can run at the same time.
 - `--user-data-dir` separates login, cache and app data per profile.
 - `CLAUDE_CONFIG_DIR` is meant to keep the Code tab from using the default config.
-- `CLAUDE_PROFILE` and `CLAUDE_CODE_PLUGIN_DIRS` load the [profile badge](../how-it-works.md#profile-badge), which colors the window in Claude Desktop. With `CLAUDE_PROFILE_NO_BADGE`, `CLAUDE_CODE_PLUGIN_DIRS` is omitted.
+- `CLAUDE_PROFILE` and `CLAUDE_CODE_PLUGIN_DIRS` load the [profile badge](../how-it-works.md#profile-badge), which colors the window in Claude Desktop, and with it the [note and skill for Claude](../how-it-works.md#what-claude-knows-about-its-profile). With `CLAUDE_PROFILE_NO_BADGE`, `CLAUDE_CODE_PLUGIN_DIRS` is omitted.
 
 Without `--no-app`, `--dry-run` shows `/usr/bin/open '/Applications/Claude (Subscription).app'` instead when a starter app is installed. `--dry-run` never asks and creates nothing.
 

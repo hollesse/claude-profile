@@ -14,5 +14,6 @@ First release.
 - Symlinks `~/.claude` and `~/.claude.json` to a default profile for tools that use the default path (`default`), and `fix-paths` for hard-wired paths inside a profile.
 - `forbid_env`: environment variables that are removed when a profile starts.
 - Profile badge: a colored label above the prompt, and a tinted window in Claude Desktop (`badge`).
+- Claude knows its profile: every session starts with a note naming its profile and config directory, and a bundled `claude-profile` skill explains how to find and change the configuration of a profile instead of using `~/.claude`.
 - Claude Desktop per profile on macOS: `desktop`, starter apps with their own Dock icon (`desktop-app`) and a launcher app with a profile picker (`launcher`).
 - Installation through Homebrew.
