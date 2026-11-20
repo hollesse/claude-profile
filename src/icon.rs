@@ -167,7 +167,9 @@ mod tests {
         let short = text_width("ACME", &options);
         let long = text_width("a-really-very-long-profile-name", &options);
         assert!(short > 1.0 && long > 3.0 * short, "{short} {long}");
-        // Uppercase letters are wider than lowercase ones.
+        // Uppercase letters are wider than lowercase ones – where the text can be measured.
+        // Without the fonts (a Linux machine without them) the width is only estimated.
+        #[cfg(target_os = "macos")]
         assert!(short > text_width("acme", &options));
     }
 }

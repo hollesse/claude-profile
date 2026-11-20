@@ -648,6 +648,8 @@ fn desktop_prefers_an_installed_starter_app() {
     assert!(so.starts_with("/usr/bin/open -n -a Claude --env CLAUDE_CONFIG_DIR="), "{so}");
 }
 
+// macOS only: the launcher's window is a Mach-O binary that build.rs compiles with swiftc.
+#[cfg(target_os = "macos")]
 #[test]
 fn desktop_app_and_launcher_create_bundles() {
     // Always with --dir: the default is the real /Applications and off limits for tests.
