@@ -25,6 +25,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install zsh
+        # The tests run the shell function in bash and zsh.
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y zsh
       - name: Toolchain
         run: rustc --version && cargo --version
       - name: Test
