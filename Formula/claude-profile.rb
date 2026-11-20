@@ -7,28 +7,28 @@
 class ClaudeProfile < Formula
   desc "Separate Claude Code profiles on one machine"
   homepage "https://hollesse.github.io/claude-profile/"
-  version "0.3.0"
+  version "0.3.1"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.0/claude-profile-0.3.0-aarch64-apple-darwin.tar.gz"
-      sha256 "8cce500911f8e3e193e79b50fa7b9ee06117069754940dcfb0849185ea9d5dac"
+      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.1/claude-profile-0.3.1-aarch64-apple-darwin.tar.gz"
+      sha256 "622fd24074728e7d2ebc84d5c74c715d78d499951b3757d40fc8d47512bead21"
     end
     on_intel do
-      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.0/claude-profile-0.3.0-x86_64-apple-darwin.tar.gz"
-      sha256 "87844bb6fe2548093c26c15afcf72e381fa11ef89d977341b38452a8827debff"
+      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.1/claude-profile-0.3.1-x86_64-apple-darwin.tar.gz"
+      sha256 "e30068d81406d2018da99f3eeb6e68cce0d6007c984bb45df096bd11bc9eb9d1"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.0/claude-profile-0.3.0-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "1cd28ba79daa7ee6ad3494b7164100bb8e24289960a847f27ed7e8de669deff0"
+      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.1/claude-profile-0.3.1-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "bc895955982dbaf1385516d438b8bf87cc34dfc4dba46d41eea65585b9a0791a"
     end
     on_intel do
-      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.0/claude-profile-0.3.0-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "b4aaa21627fcd85372e94cedb8da2422dad71c9ff6b0ee6cd2b8999df46a49c2"
+      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.1/claude-profile-0.3.1-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "f960781e0cd83206e1095e0985b3f4000769c1f738a27c1af570fde8b60627bb"
     end
   end
 
