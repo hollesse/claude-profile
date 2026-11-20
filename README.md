@@ -107,3 +107,7 @@ The [release workflow](.github/workflows/release.yml) then does the rest:
 - publishes the docs of that version to GitHub Pages.
 
 The published docs change only with a release. To republish them without one – for a typo fix, say – run `gh workflow run docs.yml -f ref=main`.
+
+## License
+
+[MIT](LICENSE)

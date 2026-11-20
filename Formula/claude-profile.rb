@@ -8,6 +8,7 @@ class ClaudeProfile < Formula
   homepage "https://hollesse.github.io/claude-profile/"
   url "https://github.com/hollesse/claude-profile/archive/refs/tags/v0.1.0.tar.gz"
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  license "MIT"
   head "https://github.com/hollesse/claude-profile.git", branch: "main"
 
   depends_on "rust" => :build

@@ -3,6 +3,9 @@ name = "claude-profile"
 version = "0.1.0"
 edition = "2021"
 description = "Separate Claude Code profiles (subscription / Vertex)"
+license = "MIT"
+repository = "https://github.com/hollesse/claude-profile"
+homepage = "https://hollesse.github.io/claude-profile/"
 publish = false
 
 [dependencies]
