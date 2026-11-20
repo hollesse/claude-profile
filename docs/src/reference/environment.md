@@ -7,6 +7,7 @@
 | `CLAUDE_PROFILE` | Profile for `run` (that is, for `claude`) and for `desktop` without a name. An unknown value is an error. `start` ignores the variable. |
 | `CLAUDE_PROFILE_QUIET` | If set, the status line at start is omitted. Warnings about removed variables still appear. |
 | `CLAUDE_PROFILE_NO_BADGE` | If set, the mod is not loaded: no [profile badge](../how-it-works.md#profile-badge), and no [note and skill for Claude](../how-it-works.md#what-claude-knows-about-its-profile). |
+| `CLAUDE_PROFILE_COMPLETE` | Set by the [shell completion](../installation.md#shell-completion) when it asks `claude-profile` for candidates. Do not set it yourself: with it, `claude-profile` answers a completion request instead of running the command. |
 | `NO_COLOR` | If set, profile names appear without badge colors in the picker and in the status line. |
 | `HOME` | Base for all paths (`~/.claude`, `~/.claude-<name>`, `~/.config/claude-profiles`). |
 | `PATH` | Search for the real `claude` and for `direnv`. |

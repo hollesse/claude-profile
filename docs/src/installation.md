@@ -54,6 +54,29 @@ To update, run `git pull` in the cloned folder and install again.
 
 On macOS the build compiles the window of the [launcher app](guides/desktop.md#launcher-with-profile-picker) with `swiftc`, which comes with the Xcode Command Line Tools. Without it, the launcher falls back to a simple selection dialog.
 
+## Shell completion
+
+`claude-profile` completes its commands, their options and the names of your profiles when you press Tab:
+
+```text
+$ claude-profile start <Tab>
+subscription  -- ~/.claude-subscription
+vertex        -- ~/.claude-vertex
+```
+
+- **Installed with Homebrew:** the completions for bash, zsh and fish are installed along with the binary. They work if your shell loads Homebrew's completions – see [Homebrew's documentation](https://docs.brew.sh/Shell-Completion).
+- **Otherwise**, add one line to your shell's startup file:
+
+  ```sh
+  echo 'source <(claude-profile completions zsh)' >> ~/.zshrc     # zsh
+  echo 'source <(claude-profile completions bash)' >> ~/.bashrc   # bash
+  claude-profile completions fish > ~/.config/fish/completions/claude-profile.fish   # fish
+  ```
+
+  In zsh the line must come after `compinit`. Open a new shell afterwards.
+
+The completions are for `claude-profile` itself. `claude` – the shell function from `replace-claude-command` – passes its arguments on to Claude Code and is not completed.
+
 ## Check
 
 ```sh

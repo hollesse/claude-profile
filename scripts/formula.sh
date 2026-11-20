@@ -74,6 +74,7 @@ $linux_intel
 
   def install
     bin.install "claude-profile"
+    generate_completions_from_executable(bin/"claude-profile", "completions", shells: [:bash, :zsh, :fish])
   end
 
   test do

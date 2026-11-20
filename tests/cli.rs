@@ -637,6 +637,44 @@ fn shell_function_works_in_bash_and_zsh() {
 }
 
 #[test]
+fn completions_cover_commands_options_and_profiles() {
+    let e = Env::with_two_profiles();
+    // What the shell loads: a function that calls `claude-profile` from PATH.
+    let zsh = e.ok(&["completions", "zsh"]);
+    assert!(zsh.starts_with("#compdef claude-profile"), "{zsh}");
+    assert!(zsh.contains("CLAUDE_PROFILE_COMPLETE=\"zsh\""), "{zsh}");
+    assert!(e.ok(&["completions", "bash"]).contains("complete "));
+    assert!(e.ok(&["completions", "fish"]).contains("complete "));
+    assert_eq!(e.run(&["completions", "tcsh"]).status.code(), Some(2));
+
+    // What that function gets back for the word at `index` of `words`.
+    let complete = |index: &str, words: &[&str]| {
+        let out = e
+            .cmd()
+            .env("CLAUDE_PROFILE_COMPLETE", "zsh")
+            .env("_CLAP_COMPLETE_INDEX", index)
+            .arg("--")
+            .args(words)
+            .output()
+            .unwrap();
+        assert!(out.status.success(), "{}", stderr(&out));
+        stdout(&out)
+    };
+    let commands = complete("1", &["claude-profile", ""]);
+    assert!(commands.contains("start:") && commands.contains("completions:"), "{commands}");
+    assert!(!commands.contains("launcher-data"), "hidden commands stay hidden: {commands}");
+    // Profile names come from the registry, with the directory as description.
+    let profiles = complete("2", &["claude-profile", "start", ""]);
+    assert!(profiles.contains("subscription:~/.claude-subscription"), "{profiles}");
+    assert!(profiles.contains("vertex:~/.claude-vertex"), "{profiles}");
+    assert!(complete("2", &["claude-profile", "default", "v"]).starts_with("vertex:"));
+    assert!(complete("3", &["claude-profile", "add", "--link-target", ""]).contains("vertex:"));
+    // A new profile has no name to complete; options are offered.
+    assert!(!complete("2", &["claude-profile", "add", ""]).contains("vertex:"));
+    assert!(complete("2", &["claude-profile", "add", "--"]).contains("--adopt:"));
+}
+
+#[test]
 fn desktop_dry_run_prints_open_command() {
     let e = Env::with_two_profiles();
     // --no-app: otherwise a starter app in the real /Applications would count.

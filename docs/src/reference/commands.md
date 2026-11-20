@@ -186,6 +186,16 @@ Adds the `claude` shell function as a marked block to the rc file, or removes it
 - Before every change a backup `<rc-file>.claude-profile-backup-<time>` is created.
 - Running it several times results in exactly one block.
 
+## completions
+
+```text
+claude-profile completions bash|zsh|fish
+```
+
+Prints what the shell has to load to complete `claude-profile` with Tab: commands, options, and profile names wherever a command takes an existing profile. See [Shell completion](../installation.md#shell-completion) for where to put it.
+
+The output is short and the same for every version: it registers a function that asks the installed `claude-profile` for the candidates each time. Profiles you add later are completed without reloading anything.
+
 ## desktop
 
 ```text

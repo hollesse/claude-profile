@@ -2,6 +2,7 @@ mod add;
 mod badge;
 mod block;
 mod color;
+mod completions;
 mod desktop;
 mod envrc;
 mod error;
@@ -17,7 +18,8 @@ mod rewrite;
 mod shell;
 
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
+use completions::profiles;
 
 #[derive(Parser)]
 #[command(
@@ -43,7 +45,7 @@ enum Cmd {
         #[arg(long = "new")]
         fresh: bool,
         /// Profile the symlink ~/.claude should point to
-        #[arg(long, value_name = "PROFILE")]
+        #[arg(long, value_name = "PROFILE", add = profiles())]
         link_target: Option<String>,
         /// Template for forbid_env
         #[arg(long, value_enum, value_name = "TEMPLATE")]
@@ -63,6 +65,7 @@ enum Cmd {
     },
     /// Change the colors of the profile badge (without options: pick from suggestions)
     Badge {
+        #[arg(add = profiles())]
         name: String,
         /// Background color, e.g. #4c9aff
         #[arg(long, value_name = "COLOR")]
@@ -73,6 +76,7 @@ enum Cmd {
     },
     /// Change the display name of a profile, e.g. acme → ACME
     Rename {
+        #[arg(add = profiles())]
         name: String,
         /// The same name in different capitalization
         #[arg(value_name = "NEW")]
@@ -80,6 +84,7 @@ enum Cmd {
     },
     /// Rewrite hard-coded paths to ~/.claude/ in a profile to the profile directory
     FixPaths {
+        #[arg(add = profiles())]
         name: String,
         /// Only show what would change
         #[arg(long)]
@@ -95,6 +100,7 @@ enum Cmd {
     },
     /// Start Claude Code with a profile (ignores CLAUDE_PROFILE)
     Start {
+        #[arg(add = profiles())]
         name: String,
         /// Arguments for claude (after `--`)
         #[arg(last = true)]
@@ -108,13 +114,14 @@ enum Cmd {
     },
     /// Point the symlink ~/.claude at a profile
     Default {
+        #[arg(add = profiles())]
         name: String,
         #[arg(long, short)]
         yes: bool,
     },
     /// Set the profile for the current folder (direnv, .envrc)
     Set {
-        #[arg(required_unless_present = "unset", conflicts_with = "unset")]
+        #[arg(required_unless_present = "unset", conflicts_with = "unset", add = profiles())]
         name: Option<String>,
         /// Remove the block from .envrc
         #[arg(long)]
@@ -135,6 +142,7 @@ enum Cmd {
     },
     /// Start Claude Desktop as a separate instance for a profile (macOS)
     Desktop {
+        #[arg(add = profiles())]
         name: Option<String>,
         /// Only print the command
         #[arg(long)]
@@ -153,9 +161,10 @@ enum Cmd {
     },
     /// Create the app bundle “Claude (<profile>).app” (macOS)
     DesktopApp {
+        #[arg(add = profiles())]
         name: String,
         /// Target folder, e.g. ~/Applications [default: /Applications]
-        #[arg(long, value_name = "DIR")]
+        #[arg(long, value_name = "DIR", value_hint = clap::ValueHint::DirPath)]
         dir: Option<std::path::PathBuf>,
     },
     /// Print the data for the window of “Claude Profiles.app” as JSON
@@ -165,10 +174,20 @@ enum Cmd {
         #[arg(long, value_name = "DIR")]
         dir: std::path::PathBuf,
     },
+    /// Print the shell completions: commands, options and profile names
+    ///
+    /// zsh:  echo 'source <(claude-profile completions zsh)' >> ~/.zshrc
+    /// bash: echo 'source <(claude-profile completions bash)' >> ~/.bashrc
+    /// fish: claude-profile completions fish > ~/.config/fish/completions/claude-profile.fish
+    #[command(verbatim_doc_comment)]
+    Completions {
+        #[arg(value_enum)]
+        shell: completions::Shell,
+    },
     /// Create “Claude Profiles.app” with a profile picker (macOS)
     Launcher {
         /// Target folder, e.g. ~/Applications [default: /Applications]
-        #[arg(long, value_name = "DIR")]
+        #[arg(long, value_name = "DIR", value_hint = clap::ValueHint::DirPath)]
         dir: Option<std::path::PathBuf>,
     },
 }
@@ -227,10 +246,17 @@ fn real_main() -> Result<()> {
         Cmd::DesktopApp { name, dir } => desktop::desktop_app(&name, dir.as_deref()),
         Cmd::LauncherData { dir } => desktop::launcher_data(&dir),
         Cmd::Launcher { dir } => desktop::launcher(dir.as_deref()),
+        Cmd::Completions { shell } => completions::print(shell),
     }
 }
 
 fn main() {
+    // A call from the registered shell function: print the candidates and exit.
+    clap_complete::CompleteEnv::with_factory(Cli::command)
+        .var(completions::VAR)
+        .completer(completions::BIN)
+        .complete();
+
     if let Err(e) = real_main() {
         eprintln!("claude-profile: error: {e:#}");
         let code = if e.downcast_ref::<error::UsageError>().is_some() {
