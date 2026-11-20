@@ -79,6 +79,8 @@ cargo clippy --all-targets
 
 The tests run against a temporary `HOME` and never touch the real `~/.claude`.
 
+[CI](.github/workflows/ci.yml) runs them on macOS and Linux for every push to `main` and every pull request.
+
 The documentation sources live in [`docs/src`](docs/src/SUMMARY.md). Preview them locally with [mdBook](https://rust-lang.github.io/mdBook/):
 
 ```sh
