@@ -7,33 +7,34 @@
 class ClaudeProfile < Formula
   desc "Separate Claude Code profiles on one machine"
   homepage "https://hollesse.github.io/claude-profile/"
-  version "0.2.0"
+  version "0.3.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/hollesse/claude-profile/releases/download/v0.2.0/claude-profile-0.2.0-aarch64-apple-darwin.tar.gz"
-      sha256 "2de249338823c6b69b1bbebd732a436d3ee8d400f7e37aaaf71cbe03ce6cd514"
+      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.0/claude-profile-0.3.0-aarch64-apple-darwin.tar.gz"
+      sha256 "8cce500911f8e3e193e79b50fa7b9ee06117069754940dcfb0849185ea9d5dac"
     end
     on_intel do
-      url "https://github.com/hollesse/claude-profile/releases/download/v0.2.0/claude-profile-0.2.0-x86_64-apple-darwin.tar.gz"
-      sha256 "4db636859ea004ad34290c380ae3018a1334a0c7fd6663e57aba918265ff162a"
+      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.0/claude-profile-0.3.0-x86_64-apple-darwin.tar.gz"
+      sha256 "87844bb6fe2548093c26c15afcf72e381fa11ef89d977341b38452a8827debff"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/hollesse/claude-profile/releases/download/v0.2.0/claude-profile-0.2.0-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "6c46e7707cf28163b98ff27c47f16da8d3fc4b92ce6888343f855f0329175572"
+      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.0/claude-profile-0.3.0-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "1cd28ba79daa7ee6ad3494b7164100bb8e24289960a847f27ed7e8de669deff0"
     end
     on_intel do
-      url "https://github.com/hollesse/claude-profile/releases/download/v0.2.0/claude-profile-0.2.0-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "843cca834aa3317d058f90ea18a2ff113fb5d684eb413ba6b9544cb8fb8e86d2"
+      url "https://github.com/hollesse/claude-profile/releases/download/v0.3.0/claude-profile-0.3.0-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "b4aaa21627fcd85372e94cedb8da2422dad71c9ff6b0ee6cd2b8999df46a49c2"
     end
   end
 
   def install
     bin.install "claude-profile"
+    generate_completions_from_executable(bin/"claude-profile", "completions", shells: [:bash, :zsh, :fish])
   end
 
   test do
