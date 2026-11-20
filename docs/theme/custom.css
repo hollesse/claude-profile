@@ -1,0 +1,78 @@
+/* Landing page header and feature cards. Colors follow the active mdBook theme;
+   the accent is the orange of the logo's front card, darkened for white text. */
+
+:root {
+    --cp-accent: #b9532f;
+}
+
+.hero {
+    text-align: center;
+    padding: 1rem 1rem 3rem;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+.hero img {
+    width: 152px;
+    height: 152px;
+}
+
+.hero h1 {
+    margin: 0.4rem 0 0;
+    font-size: 4rem;
+    letter-spacing: -0.02em;
+}
+
+.hero .tagline {
+    max-width: 32em;
+    margin: 1rem auto 2.2rem;
+    font-size: 1.9rem;
+    line-height: 1.45;
+    opacity: 0.85;
+}
+
+.content .hero-links a {
+    display: inline-block;
+    margin: 0.4rem;
+    padding: 0.8rem 2rem;
+    border: 1px solid var(--cp-accent);
+    border-radius: 999px;
+    color: var(--fg);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.content .hero-links a.primary {
+    background: var(--cp-accent);
+    color: #fff;
+}
+
+.content .hero-links a:hover {
+    filter: brightness(1.12);
+    text-decoration: none;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.6rem;
+    margin: 2rem 0 3rem;
+}
+
+.card {
+    padding: 0.4rem 1.8rem 0.8rem;
+    border: 1px solid var(--table-border-color);
+    border-top: 4px solid var(--cp-accent);
+    border-radius: 10px;
+    background: var(--quote-bg);
+}
+
+.card h3 {
+    margin-top: 1.4rem;
+    font-size: 1.7rem;
+}
+
+.card p {
+    margin: 0.8rem 0;
+    font-size: 1.5rem;
+}

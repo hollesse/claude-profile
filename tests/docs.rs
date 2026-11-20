@@ -12,3 +12,11 @@ fn docs_version_tag_matches_cargo_version() {
         "docs/theme/version.js does not match the version in Cargo.toml – expected: {expected}"
     );
 }
+
+/// The docs show the launcher icon as logo and favicon; both are copies of the asset.
+#[test]
+fn docs_logo_matches_launcher_icon() {
+    let icon = include_str!("../assets/launcher-icon.svg");
+    assert_eq!(include_str!("../docs/src/assets/logo.svg"), icon, "docs/src/assets/logo.svg is out of date");
+    assert_eq!(include_str!("../docs/theme/favicon.svg"), icon, "docs/theme/favicon.svg is out of date");
+}

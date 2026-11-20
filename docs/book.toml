@@ -10,6 +10,7 @@ build-dir = "book"
 [output.html]
 default-theme = "light"
 preferred-dark-theme = "navy"
-additional-css = ["theme/version.css"]
+additional-css = ["theme/version.css", "theme/custom.css"]
 additional-js = ["theme/version.js"]
 git-repository-url = "https://github.com/hollesse/claude-profile"
+site-url = "/claude-profile/"

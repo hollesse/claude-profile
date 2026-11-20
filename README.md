@@ -1,6 +1,31 @@
-# claude-profile
+<p align="center">
+  <img src="assets/launcher-icon.svg" width="160" height="160" alt="claude-profile logo: a fan of three profile cards">
+</p>
 
-Separate Claude Code profiles on one machine – for example one for the Claude subscription and one for Vertex AI. Each profile has its own config directory, and `claude` never starts without an explicitly chosen profile.
+<h1 align="center">claude-profile</h1>
+
+<p align="center">
+  Separate Claude Code profiles on one machine –<br>
+  each with its own settings, history and login.
+</p>
+
+<p align="center">
+  <a href="https://hollesse.github.io/claude-profile/"><b>Documentation</b></a> ·
+  <a href="https://hollesse.github.io/claude-profile/getting-started.html">Getting started</a> ·
+  <a href="https://hollesse.github.io/claude-profile/tutorial.html">Tutorial</a> ·
+  <a href="https://hollesse.github.io/claude-profile/reference/commands.html">Commands</a>
+</p>
+
+---
+
+Claude Code has no notion of profiles. `claude-profile` adds them – for example one profile for your personal Claude subscription and one for Vertex AI through your company – without a virtual machine.
+
+- **One directory per profile.** `~/.claude-<name>`, passed to Claude Code as `CLAUDE_CONFIG_DIR`.
+- **No start without a profile.** `claude` becomes a shell function that always resolves a profile first: from `CLAUDE_PROFILE`, per directory via direnv, or by asking you.
+- **A symlink for everything else.** `~/.claude` points to a profile of your choice, so tools with the default path hard-wired land in exactly that profile.
+- **No leaking environment.** Each profile lists variables that are removed on start, such as `OTEL_*` or `ANTHROPIC_VERTEX_*`.
+- **You see where you are.** A colored badge above the prompt names the profile of every session.
+- **Claude Desktop too (macOS).** One instance per profile, each with its own Dock icon, plus a launcher app to pick one.
 
 ## Quick start
 
@@ -11,22 +36,30 @@ claude-profile add personal                     # adopt the existing ~/.claude
 claude-profile replace-claude-command           # `claude` now runs through a profile
 ```
 
-## Documentation
-
-The guide lives in [`docs/src`](docs/src/SUMMARY.md) and can be built as an HTML site with [mdBook](https://rust-lang.github.io/mdBook/):
-
-```sh
-brew install mdbook
-mdbook serve docs --open
+```text
+$ claude-profile list
+NAME          DIRECTORY               STATUS
+subscription  ~/.claude-subscription  ok
+vertex        ~/.claude-vertex        ok       ← symlink ← active ← direnv
 ```
 
-- [Installation](docs/src/installation.md)
-- [Getting started](docs/src/getting-started.md)
-- [Tutorial: two profiles](docs/src/tutorial.md)
-- [Commands](docs/src/reference/commands.md)
-- [Troubleshooting](docs/src/troubleshooting.md)
+Nothing is ever deleted: your existing `~/.claude` is renamed, and a symlink takes its place.
 
-Requirements and open questions are in the [PRD](prd.md).
+## Documentation
+
+The full guide is at **[hollesse.github.io/claude-profile](https://hollesse.github.io/claude-profile/)**:
+
+| | |
+|---|---|
+| [Installation](https://hollesse.github.io/claude-profile/installation.html) | Prerequisites, building, updating |
+| [Getting started](https://hollesse.github.io/claude-profile/getting-started.html) | Your first profile in five minutes |
+| [Tutorial: two profiles](https://hollesse.github.io/claude-profile/tutorial.html) | Subscription and Vertex side by side |
+| [Claude Desktop per profile](https://hollesse.github.io/claude-profile/guides/desktop.html) | Starter apps and the launcher |
+| [Commands](https://hollesse.github.io/claude-profile/reference/commands.html) | Every command and option |
+| [How it works](https://hollesse.github.io/claude-profile/how-it-works.html) | What is isolated and what is not |
+| [Troubleshooting](https://hollesse.github.io/claude-profile/troubleshooting.html) | Common problems and their fixes |
+
+Requirements and open questions are in the [PRD](prd.md) (German).
 
 ## Development
 
@@ -36,3 +69,10 @@ cargo clippy --all-targets
 ```
 
 The tests run against a temporary `HOME` and never touch the real `~/.claude`.
+
+The documentation sources live in [`docs/src`](docs/src/SUMMARY.md). Preview them locally with [mdBook](https://rust-lang.github.io/mdBook/); every push to `main` publishes them to GitHub Pages.
+
+```sh
+brew install mdbook
+mdbook serve docs --open
+```

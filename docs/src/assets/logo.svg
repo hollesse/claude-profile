@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Icon for “Claude Profiles.app”: a fan of profile cards, with the sunburst card in front.
+       src/icon.rs renders the .icns file from it when the app is created. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbfaf6"/>
+      <stop offset="1" stop-color="#e9e4d6"/>
+    </linearGradient>
+    <linearGradient id="front" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e58a68"/>
+      <stop offset="1" stop-color="#cf6a48"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#63a8ff"/>
+      <stop offset="1" stop-color="#3f86ea"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#47c490"/>
+      <stop offset="1" stop-color="#2c9d6c"/>
+    </linearGradient>
+    <filter id="tile" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity="0.28"/>
+    </filter>
+    <filter id="card" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#3a2a1c" flood-opacity="0.30"/>
+    </filter>
+    <clipPath id="clip"><rect x="100" y="100" width="824" height="824" rx="186"/></clipPath>
+  </defs>
+
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)" filter="url(#tile)"/>
+  <g clip-path="url(#clip)">
+    <g filter="url(#card)">
+      <rect x="322" y="262" width="380" height="500" rx="56" fill="url(#blue)" transform="rotate(-17 512 860)"/>
+    </g>
+    <g filter="url(#card)">
+      <rect x="322" y="262" width="380" height="500" rx="56" fill="url(#green)" transform="rotate(17 512 860)"/>
+    </g>
+    <g filter="url(#card)">
+      <rect x="312" y="240" width="400" height="520" rx="60" fill="url(#front)"/>
+    </g>
+    <rect x="313.500" y="241.500" width="397" height="517" rx="58.500" fill="none" stroke="#fff" stroke-opacity="0.22" stroke-width="3"/>
+  </g>
+  <g fill="#fbf7ee" stroke="#fbf7ee" stroke-width="10" stroke-linejoin="round">
+    <polygon points="517.0,480.0 527.0,350.0 497.0,350.0 507.0,480.0"/>
+    <polygon points="526.6,485.4 590.8,398.0 565.1,382.6 518.0,480.3"/>
+    <polygon points="531.6,493.6 643.8,435.4 627.9,409.9 526.3,485.2"/>
+    <polygon points="532.0,505.0 646.0,515.0 646.0,485.0 532.0,495.0"/>
+    <polygon points="526.3,514.8 631.3,592.2 647.2,566.8 531.6,506.4"/>
+    <polygon points="518.0,519.7 563.0,614.0 588.7,598.6 526.6,514.6"/>
+    <polygon points="507.0,520.0 497.0,648.0 527.0,648.0 517.0,520.0"/>
+    <polygon points="497.4,514.6 431.2,605.4 456.9,620.9 506.0,519.7"/>
+    <polygon points="492.4,506.4 376.8,566.8 392.7,592.2 497.7,514.8"/>
+    <polygon points="492.0,495.0 374.0,485.0 374.0,515.0 492.0,505.0"/>
+    <polygon points="497.7,485.2 396.1,409.9 380.2,435.4 492.4,493.6"/>
+    <polygon points="506.0,480.3 460.0,384.3 434.2,399.7 497.4,485.4"/>
+  </g>
+  <circle cx="512" cy="500" r="27" fill="#fbf7ee"/>
+</svg>
