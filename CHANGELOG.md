@@ -4,6 +4,10 @@ All notable changes to `claude-profile` are listed here. The format follows [Kee
 
 ## [Unreleased]
 
+### Fixed
+
+- The installation instructions for Homebrew include `brew trust hollesse/claude-profile`, which recent Homebrew versions require before they load a formula from this tap.
+
 ## [0.1.0] - 2026-11-20
 
 First release.

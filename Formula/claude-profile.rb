@@ -2,6 +2,7 @@
 # `sha256` after each release – do not edit them by hand.
 #
 #   brew tap hollesse/claude-profile https://github.com/hollesse/claude-profile
+#   brew trust hollesse/claude-profile
 #   brew install claude-profile
 class ClaudeProfile < Formula
   desc "Separate Claude Code profiles on one machine"

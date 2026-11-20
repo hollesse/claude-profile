@@ -32,6 +32,7 @@ Claude Code has no notion of profiles. `claude-profile` adds them – for exampl
 
 ```sh
 brew tap hollesse/claude-profile https://github.com/hollesse/claude-profile
+brew trust hollesse/claude-profile   # recent Homebrew versions ask for this once
 brew install claude-profile
 ```
 

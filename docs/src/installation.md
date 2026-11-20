@@ -10,10 +10,14 @@
 
 ```sh
 brew tap hollesse/claude-profile https://github.com/hollesse/claude-profile
+brew trust hollesse/claude-profile
 brew install claude-profile
 ```
 
-Homebrew builds `claude-profile` from the source of the latest release; the Rust toolchain it needs for that is installed along the way. The first line tells Homebrew where the formula lives and is only needed once.
+Homebrew builds `claude-profile` from the source of the latest release; the Rust toolchain it needs for that is installed or updated along the way. The first two lines are only needed once:
+
+- `brew tap` tells Homebrew where the formula lives.
+- `brew trust` allows Homebrew to load formulae from this tap. Recent Homebrew versions refuse a tap that is not part of Homebrew itself until you trust it (“Refusing to load formula … from untrusted tap”). If your Homebrew does not know the `trust` command, skip the line.
 
 ### Update
 
