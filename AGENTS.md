@@ -9,9 +9,18 @@
 - No entry for pure refactorings, tests, CI, or documentation wording. If in doubt, add one.
 - Never edit the sections of released versions, and never set versions by hand – see Releasing.
 
+## Documentation with every change
+
+**Whatever you implement, check the documentation and update it in the same change.** A feature, fix or changed message is not done while the docs still describe the old behaviour or do not mention the new one. Do this unasked, and say in your report which pages you changed – or that you checked and nothing needed changing.
+
+- Search `docs/src` and `README.md` for every command, option, message, file and environment variable you touched; do not rely on memory of where it is mentioned.
+- The usual places: `docs/src/reference/commands.md` (synopsis, options, behaviour), `reference/environment.md` (variables, exit codes, files), `reference/profiles-json.md` (registry fields), the guide of the feature under `docs/src/guides/`, `troubleshooting.md` (quoted warnings and errors), `getting-started.md` and `tutorial.md` (quoted output), and the feature list in `README.md`.
+- Quoted program output in the docs must match what the program prints, character for character.
+- A new feature needs its own description, not just a line in the command reference: what it is for, how to use it, what its limits are.
+- A new page goes into `docs/src/SUMMARY.md`; a renamed heading changes its anchor, so fix the links to it.
+
 ## Keep in sync
 
-- **Docs.** `docs/src` describes the behaviour and quotes program output. When you change a command, option or message, update the pages that mention it (start with `docs/src/reference/commands.md`).
 - **Language.** Code, messages, comments and docs are English. `prd.md` is the only German file.
 - **Logo.** `docs/src/assets/logo.svg` and `docs/theme/favicon.svg` are copies of `assets/launcher-icon.svg`; a test fails when they differ.
 - **Badge palette.** The first six colors of `PALETTE` in `src/color.rs` must match `mod/profile-badge/hooks/register.tsx`.
